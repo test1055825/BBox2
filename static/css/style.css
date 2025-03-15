@@ -1,0 +1,43 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    display: flex;
+}
+
+#mainContent {
+    width: 70%;
+    padding: 10px;
+}
+
+#sidebar {
+    width: 30%;
+    padding: 10px;
+    border-left: 1px solid #ccc;
+    text-align: left;
+}
+
+#imageContainer {
+    position: relative;
+    display: inline-block;
+}
+
+#image {
+    max-width: 100%;
+    height: auto;
+}
+
+#canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#newLabel {
+    width: calc(100% - 22px);
+    margin-bottom: 10px;
+}
+
+#labelSelect {
+    width: 100%;
+    margin-bottom: 10px;
+}

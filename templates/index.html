@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Annotation Tool</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+   <!--<h1>Image Annotation Tool</h1>-->
+    <div id="mainContent">
+        <input type="file" id="imageUpload" accept="image/*">
+        <div id="imageContainer" class="imageContainer">
+            <img id="image" src="" alt="Upload an image">
+            <canvas id="canvas"></canvas>
+        </div>
+        <button id="saveAnnotations">Save Annotations</button>
+    </div>
+    <div id="sidebar">
+        <h2>Annotations</h2>
+        <ul id="annotationsList"></ul>
+        <h2>Labels</h2>
+        <input type="text" id="newLabel" placeholder="Add new label">
+        <button id="addLabel">Add Label</button>
+        <select id="labelSelect">
+            <option value="" disabled selected>Select a label</option>
+        </select>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
