@@ -17,15 +17,19 @@ def upload():
     if file:
         file_path = os.path.join('static/uploads', file.filename)
         file.save(file_path)
-        return jsonify({'file_path': file_path})
+        return jsonify({'file_path': file_path, 'file_name': file.filename})
     return 'File not uploaded', 400
 
 @app.route('/save_annotations', methods=['POST'])
 def save_annotations():
     data = request.json
-    with open('annotations.json', 'w') as f:
-        json.dump(data, f)
-    return 'Annotations saved', 200
+    file_name = data.get('file_name')
+    if file_name:
+        annotations_path = os.path.join('static/uploads', f"{os.path.splitext(file_name)[0]}_annotations.json")
+        with open(annotations_path, 'w') as f:
+            json.dump(data['annotations'], f)
+        return jsonify({'message': f'Annotations saved successfully at {annotations_path}'}), 200
+    return jsonify({'error': 'File name not provided'}), 400
 
 if __name__ == '__main__':
     app.run(debug=True)

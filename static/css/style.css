@@ -1,29 +1,59 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    display: flex;
+    margin: 0;
+    padding: 0;
+    height: 100vh; /* Ustaw wysokość na 100% widoku */
+    overflow: hidden; /* Ukryj przewijanie */
 }
 
 #mainContent {
-    width: 70%;
     padding: 10px;
+    height: 100vh; /* Ustaw wysokość na 100% widoku */
+    display: flex;
+    flex-direction: column; /* Ustawienie kierunku kolumny */
+}
+
+#fileUploadContainer {
+    margin-bottom: 10px; /* Dodaj odstęp poniżej przycisku */
 }
 
 #sidebar {
-    width: 30%;
     padding: 10px;
     border-left: 1px solid #ccc;
     text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Ensure content is spaced out */
+}
+
+#labelsSection {
+    flex: 1; /* Górna połowa */
+    overflow-y: auto; 
+}
+
+#annotationsSection {
+    flex: 1; /* Dolna połowa */
+    overflow-y: auto; /* Dodaj przewijanie, jeśli lista jest zbyt długa */
 }
 
 #imageContainer {
-    position: relative;
-    display: inline-block;
+    width: 100%;   /* Stała szerokość 100% */
+    height: 100%;  /* Stała wysokość 100% */
+    display: flex;  /* Wyśrodkowanie obrazu */
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Ensure the image container does not scroll */
+    border: 2px solid black;
+    position: relative; /* Ensure canvas is positioned correctly */
+    transition: transform 0.2s ease-in-out; /* Płynna animacja */
+    background-color: white; /* Ustaw tło na biały kolor */
 }
 
 #image {
-    max-width: 100%;
-    height: auto;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Obraz dopasuje się do kontenera, może być przycięty */
 }
 
 #canvas {
@@ -32,12 +62,55 @@ body {
     left: 0;
 }
 
+#zoomControls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+#zoomControls button {
+    margin: 5px 0;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
 #newLabel {
-    width: calc(100% - 22px);
+    width: 100%; /* Możesz zrezygnować z `calc`, jeśli nie jest konieczne */
+    box-sizing: border-box; /* Zapewnia prawidłowe obliczanie szerokości */
     margin-bottom: 10px;
 }
 
 #labelSelect {
     width: 100%;
     margin-bottom: 10px;
+}
+
+#annotationsList {
+    margin-top: auto; /* Push annotations list to the bottom */
+}
+
+#saveAnnotations {
+    align-self: flex-end; /* Align button to the bottom */
+    margin-top: 10px;
+}
+
+button {
+    cursor: pointer;
+}
+
+li {
+    list-style: none;
+    padding: 5px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+li.selected {
+    background-color: lightblue;
 }
