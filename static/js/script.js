@@ -18,7 +18,7 @@ document.getElementById('imageUpload').addEventListener('change', function(event
             redrawImage(); // Redraw image on load
             redrawAnnotations(); // Redraw annotations on load
         };
-        document.getElementById('saveAnnotations').dataset.fileName = data.file_name; // Store file name
+        document.getElementById('saveAsAnnotations').dataset.fileName = data.file_name; // Updated selector
     });
 });
 
@@ -97,23 +97,9 @@ canvas.addEventListener('wheel', function(event) {
     redrawAnnotations();
 });
 
-document.getElementById('saveAnnotations').addEventListener('click', function() {
-    const fileName = this.dataset.fileName; // Get stored file name
-    fetch('/save_annotations', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ file_name: fileName, annotations: annotations })
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert(data.message || data.error);
-    });
-});
 
 document.getElementById('saveAsAnnotations').addEventListener('click', async function() {
-    const fileName = document.getElementById('saveAnnotations').dataset.fileName;
+    const fileName = this.dataset.fileName;  // Updated to use 'this' instead
     if (!fileName) {
         alert('Please upload an image first');
         return;

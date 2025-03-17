@@ -11,38 +11,12 @@
       "image_id": 1,
       "category_id": 1,
       "bbox": [
-        948,
-        133,
-        57,
-        106
-      ],
-      "area": 6042,
-      "iscrowd": 0
-    },
-    {
-      "id": 2,
-      "image_id": 1,
-      "category_id": 1,
-      "bbox": [
-        1045,
-        362,
-        49,
+        926,
+        129,
+        85,
         109
       ],
-      "area": 5341,
-      "iscrowd": 0
-    },
-    {
-      "id": 3,
-      "image_id": 1,
-      "category_id": 1,
-      "bbox": [
-        1036,
-        594,
-        51,
-        113
-      ],
-      "area": 5763,
+      "area": 9265,
       "iscrowd": 0
     }
   ],
