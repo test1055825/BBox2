@@ -24,16 +24,15 @@ body {
     text-align: left;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Ensure content is spaced out */
+    height: 100vh; /* Ustaw wysokość na 100% widoku */
 }
 
 #labelsSection {
-    flex: 1; /* Górna połowa */
-    overflow-y: auto; 
+    flex: 0 0 auto; /* Stała wysokość */
 }
 
 #annotationsSection {
-    flex: 1; /* Dolna połowa */
+    flex: 1 1 auto; /* Elastyczna wysokość */
     overflow-y: auto; /* Dodaj przewijanie, jeśli lista jest zbyt długa */
 }
 
@@ -61,7 +60,6 @@ body {
     top: 0;
     left: 0;
 }
-
 
 #newLabel {
     width: 100%; /* Możesz zrezygnować z `calc`, jeśli nie jest konieczne */

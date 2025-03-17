@@ -16,7 +16,7 @@
                     <canvas id="canvas"></canvas>
                 </div>
             </div>
-            <div id="sidebar" class="col-md-3">
+            <div id="sidebar" class="col-md-3 d-flex flex-column">
                 <div id="labelsSection" class="mb-3">
                     <h2>Labels</h2>
                     <div class="input-group mb-3">
@@ -29,8 +29,8 @@
                         <option value="" disabled selected>Select a label</option>
                     </select>
                 </div>
-                <div id="annotationsSection" class="mb-3">
-                    <h2>Annotations</h2>
+                <div id="annotationsSection" class="mb-3 flex-grow-1 overflow-auto">
+                    <h2>Annotations:</h2>
                     <ul id="annotationsList" class="list-group"></ul>
                 </div>
                 <div id="fileUploadContainer" class="mb-3">
@@ -41,7 +41,7 @@
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
