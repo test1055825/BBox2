@@ -26,9 +26,40 @@ def upload_route():
 def save_annotations_route():
     data = request.json
     file_name = data.get('file_name')
+    annotations = data.get('annotations', [])
     if file_name:
-        annotations_path = os.path.join(UPLOAD_DIR, f"{os.path.splitext(file_name)[0]}_annotations.json")
+        coco_annotations = {
+            "images": [
+                {
+                    "file_name": file_name,
+                    "id": 1
+                }
+            ],
+            "annotations": [
+                {
+                    "id": idx + 1,
+                    "image_id": 1,
+                    "category_id": 1,  # Assuming a single category for simplicity
+                    "bbox": [
+                        annotation['startX'],
+                        annotation['startY'],
+                        annotation['endX'] - annotation['startX'],
+                        annotation['endY'] - annotation['startY']
+                    ],
+                    "area": (annotation['endX'] - annotation['startX']) * (annotation['endY'] - annotation['startY']),
+                    "iscrowd": 0
+                }
+                for idx, annotation in enumerate(annotations)
+            ],
+            "categories": [
+                {
+                    "id": 1,
+                    "name": "default"  # Replace with actual category names if needed
+                }
+            ]
+        }
+        annotations_path = os.path.join(UPLOAD_DIR, f"{os.path.splitext(file_name)[0]}_annotations_coco.json")
         with open(annotations_path, 'w') as f:
-            json.dump(data['annotations'], f)
-        return jsonify({'message': f'Annotations saved successfully at {annotations_path}'}), 200
+            json.dump(coco_annotations, f)
+        return jsonify({'message': f'Annotations saved successfully in COCO format at {annotations_path}'}), 200
     return jsonify({'error': 'File name not provided'}), 400
