@@ -8,12 +8,12 @@ UPLOAD_DIR = os.getenv('UPLOAD_DIR', 'static/uploads')
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 # Import routes
-from routes import index, upload, save_annotations
+from routes import index, upload, save_annotations_blueprint  # updated import
 
 # Register routes
 app.register_blueprint(index)
 app.register_blueprint(upload)
-app.register_blueprint(save_annotations)
+app.register_blueprint(save_annotations_blueprint)  # updated registration
 
 if __name__ == '__main__':
     app.run(debug=True)
