@@ -5,12 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <title>Image Annotation Tool</title>
 </head>
 <body>
     <div class="container-fluid">
         <div class="row">
-            <div id="mainContent" class="col-md-9">
+            <!-- New Left Sidebar -->
+            <div id="leftSidebar" class="col-md-2 bg-light p-3">
+                <h4>File Operations</h4>
+                <div class="sidebar-icons">
+                    <label for="imageUpload" class="icon-button">
+                        <i class="fas fa-file-upload fa-2x" title="Load Image"></i>
+                    </label>
+                    <input type="file" id="imageUpload" accept="image/*" class="d-none">
+                    
+                    <button id="saveAsAnnotations" class="icon-button">
+                        <i class="fas fa-save fa-2x" title="Save Annotations"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- Main Content - adjusted column size -->
+            <div id="mainContent" class="col-md-7">
                 <div id="imageContainer" class="imageContainer">
                     <img id="image" src="" alt="Upload an image" class="img-fluid">
                     <canvas id="canvas"></canvas>
@@ -20,6 +36,7 @@
                     <button id="zoomOut" class="btn btn-secondary">Zoom Out</button>
                 </div>
             </div>
+            <!-- Right Sidebar - adjusted column size -->
             <div id="sidebar" class="col-md-3 d-flex flex-column">
                 <div id="labelsSection" class="mb-3">
                     <h2>Labels</h2>
@@ -38,10 +55,9 @@
                     <h2>Annotations list:</h2>
                     <ul id="annotationsList" class="list-group"></ul>
                 </div>
+                <!-- Remove the file upload container from here -->
                 <div id="fileUploadContainer" class="mb-3">
-                    <input type="file" id="imageUpload" accept="image/*" class="form-control-file mb-2">
                     <div class="btn-group">
-                        <button id="saveAsAnnotations" class="btn btn-primary">Save As...</button>
                     </div>
                 </div>
             </div>
