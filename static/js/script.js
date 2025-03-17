@@ -34,20 +34,57 @@ let lastChosenLabel = null; // Zmienna do przechowywania ostatnio wybranej etyki
 let selectedAnnotations = new Set(); // Zbiór zaznaczonych anotacji
 let scale = 1; // Zmienna do przechowywania skali zoomu
 const zoomFactor = 1.1; // Współczynnik zoomu
+let isDragging = false;
+let draggedAnnotationIndex = -1;
+let dragStartX, dragStartY;
+let originalAnnotation = null;
 
 canvas.addEventListener('mousedown', function(event) {
-    if (event.button === 2) { // Prawy przycisk myszy
+    if (event.button === 2) { // Right click
         isDrawing = false;
         canvas.addEventListener('mousemove', deleteAnnotation);
     } else {
-        isDrawing = true;
-        startX = event.offsetX / scale;
-        startY = event.offsetY / scale;
+        const mouseX = event.offsetX / scale;
+        const mouseY = event.offsetY / scale;
+        
+        // Check if clicking on existing annotation
+        const clickedAnnotation = annotations.findIndex(annotation => 
+            mouseX >= annotation.startX && mouseX <= annotation.endX &&
+            mouseY >= annotation.startY && mouseY <= annotation.endY
+        );
+
+        if (clickedAnnotation >= 0) {
+            isDragging = true;
+            draggedAnnotationIndex = clickedAnnotation;
+            dragStartX = mouseX;
+            dragStartY = mouseY;
+            originalAnnotation = {...annotations[clickedAnnotation]};
+        } else {
+            isDrawing = true;
+            startX = mouseX;
+            startY = mouseY;
+        }
     }
 });
 
 canvas.addEventListener('mousemove', function(event) {
-    if (isDrawing) {
+    const mouseX = event.offsetX / scale;
+    const mouseY = event.offsetY / scale;
+
+    if (isDragging && draggedAnnotationIndex >= 0) {
+        const deltaX = mouseX - dragStartX;
+        const deltaY = mouseY - dragStartY;
+        
+        const annotation = annotations[draggedAnnotationIndex];
+        annotation.startX = originalAnnotation.startX + deltaX;
+        annotation.startY = originalAnnotation.startY + deltaY;
+        annotation.endX = originalAnnotation.endX + deltaX;
+        annotation.endY = originalAnnotation.endY + deltaY;
+
+        redrawImage();
+        redrawAnnotations();
+        updateAnnotationsList();
+    } else if (isDrawing) {
         const currentX = event.offsetX / scale;
         const currentY = event.offsetY / scale;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -58,7 +95,11 @@ canvas.addEventListener('mousemove', function(event) {
 });
 
 canvas.addEventListener('mouseup', function(event) {
-    if (event.button === 2) { // Prawy przycisk myszy
+    if (isDragging) {
+        isDragging = false;
+        draggedAnnotationIndex = -1;
+        originalAnnotation = null;
+    } else if (event.button === 2) { // Prawy przycisk myszy
         canvas.removeEventListener('mousemove', deleteAnnotation);
     } else if (isDrawing) {
         isDrawing = false;
