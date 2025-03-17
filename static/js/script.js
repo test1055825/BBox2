@@ -39,14 +39,67 @@ let draggedAnnotationIndex = -1;
 let dragStartX, dragStartY;
 let originalAnnotation = null;
 
+let isResizing = false;
+let resizeHandle = '';
+const handleSize = 8;
+
+function drawResizeHandles(x, y, width, height) {
+    const handles = {
+        'nw': [x - handleSize/2, y - handleSize/2],
+        'ne': [x + width - handleSize/2, y - handleSize/2],
+        'sw': [x - handleSize/2, y + height - handleSize/2],
+        'se': [x + width - handleSize/2, y + height - handleSize/2]
+    };
+
+    ctx.fillStyle = 'white';
+    ctx.strokeStyle = 'black';
+    
+    Object.values(handles).forEach(([hx, hy]) => {
+        ctx.fillRect(hx, hy, handleSize, handleSize);
+        ctx.strokeRect(hx, hy, handleSize, handleSize);
+    });
+    
+    return handles;
+}
+
+function getResizeHandle(mouseX, mouseY, annotation) {
+    const handles = drawResizeHandles(
+        annotation.startX, 
+        annotation.startY, 
+        annotation.endX - annotation.startX, 
+        annotation.endY - annotation.startY
+    );
+    
+    for (const [position, [x, y]] of Object.entries(handles)) {
+        if (mouseX >= x && mouseX <= x + handleSize &&
+            mouseY >= y && mouseY <= y + handleSize) {
+            return position;
+        }
+    }
+    return '';
+}
+
 canvas.addEventListener('mousedown', function(event) {
-    if (event.button === 2) { // Right click
+    const mouseX = event.offsetX / scale;
+    const mouseY = event.offsetY / scale;
+
+    if (event.button === 2) {
         isDrawing = false;
         canvas.addEventListener('mousemove', deleteAnnotation);
     } else {
-        const mouseX = event.offsetX / scale;
-        const mouseY = event.offsetY / scale;
-        
+        // Check for resize handles first
+        for (let i = annotations.length - 1; i >= 0; i--) {
+            resizeHandle = getResizeHandle(mouseX, mouseY, annotations[i]);
+            if (resizeHandle) {
+                isResizing = true;
+                draggedAnnotationIndex = i;
+                originalAnnotation = {...annotations[i]};
+                dragStartX = mouseX;
+                dragStartY = mouseY;
+                return;
+            }
+        }
+
         // Check if clicking on existing annotation
         const clickedAnnotation = annotations.findIndex(annotation => 
             mouseX >= annotation.startX && mouseX <= annotation.endX &&
@@ -71,7 +124,34 @@ canvas.addEventListener('mousemove', function(event) {
     const mouseX = event.offsetX / scale;
     const mouseY = event.offsetY / scale;
 
-    if (isDragging && draggedAnnotationIndex >= 0) {
+    if (isResizing && draggedAnnotationIndex >= 0) {
+        const deltaX = mouseX - dragStartX;
+        const deltaY = mouseY - dragStartY;
+        const annotation = annotations[draggedAnnotationIndex];
+
+        switch(resizeHandle) {
+            case 'nw':
+                annotation.startX = originalAnnotation.startX + deltaX;
+                annotation.startY = originalAnnotation.startY + deltaY;
+                break;
+            case 'ne':
+                annotation.endX = originalAnnotation.endX + deltaX;
+                annotation.startY = originalAnnotation.startY + deltaY;
+                break;
+            case 'sw':
+                annotation.startX = originalAnnotation.startX + deltaX;
+                annotation.endY = originalAnnotation.endY + deltaY;
+                break;
+            case 'se':
+                annotation.endX = originalAnnotation.endX + deltaX;
+                annotation.endY = originalAnnotation.endY + deltaY;
+                break;
+        }
+
+        redrawImage();
+        redrawAnnotations();
+        updateAnnotationsList();
+    } else if (isDragging && draggedAnnotationIndex >= 0) {
         const deltaX = mouseX - dragStartX;
         const deltaY = mouseY - dragStartY;
         
@@ -95,7 +175,10 @@ canvas.addEventListener('mousemove', function(event) {
 });
 
 canvas.addEventListener('mouseup', function(event) {
-    if (isDragging) {
+    if (isResizing) {
+        isResizing = false;
+        resizeHandle = '';
+    } else if (isDragging) {
         isDragging = false;
         draggedAnnotationIndex = -1;
         originalAnnotation = null;
@@ -326,6 +409,16 @@ function redrawAnnotations() {
         }
         ctx.strokeRect(annotation.startX, annotation.startY, annotation.endX - annotation.startX, annotation.endY - annotation.startY);
         ctx.fillText(annotation.label, annotation.startX, annotation.startY - 5); // Draw text above the rectangle
+        
+        // Add resize handles for selected annotations
+        if (selectedAnnotations.has(index)) {
+            drawResizeHandles(
+                annotation.startX, 
+                annotation.startY, 
+                annotation.endX - annotation.startX, 
+                annotation.endY - annotation.startY
+            );
+        }
     });
     ctx.restore();
 }
