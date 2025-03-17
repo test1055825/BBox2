@@ -247,7 +247,7 @@ function redrawAnnotations() {
         if (selectedAnnotations.has(index)) {
             ctx.strokeStyle = 'blue'; // Ustaw kolor na niebieski dla zaznaczonej anotacji
         } else if (annotation.label === currentLabel) {
-            ctx.strokeStyle = 'green'; // Ustaw kolor na zielony dla wybranej etykiety
+            ctx.strokeStyle = 'yellow'; // Ustaw kolor na zielony dla wybranej etykiety
         } else {
             ctx.strokeStyle = 'red'; // Ustaw domyślny kolor na czerwony
         }
