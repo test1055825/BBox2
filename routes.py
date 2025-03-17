@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, url_for
 import os
 import json
 
@@ -19,7 +19,11 @@ def upload_route():
     if file:
         file_path = os.path.join(UPLOAD_DIR, file.filename)
         file.save(file_path)
-        return jsonify({'file_path': file_path, 'file_name': file.filename})
+        # Return URL instead of file path
+        return jsonify({
+            'file_path': url_for('static', filename=f'uploads/{file.filename}'),
+            'file_name': file.filename
+        })
     return 'File not uploaded', 400
 
 @save_annotations.route('/save_annotations', methods=['POST'])
@@ -61,16 +65,18 @@ def save_annotations_route():
             ]
         }
         
-        # Use custom save path if provided, otherwise use default
+        # Use provided save_path or default to UPLOAD_DIR
         if save_path:
-            save_dir = os.path.dirname(save_path)
-            if save_dir:
-                os.makedirs(save_dir, exist_ok=True)
             annotations_path = save_path
         else:
             annotations_path = os.path.join(UPLOAD_DIR, f"{os.path.splitext(file_name)[0]}_annotations_coco.json")
             
+        os.makedirs(os.path.dirname(annotations_path), exist_ok=True)
         with open(annotations_path, 'w') as f:
-            json.dump(coco_annotations, f)
-        return jsonify({'message': f'Annotations saved successfully in COCO format at {annotations_path}'}), 200
+            json.dump(coco_annotations, f, indent=2)
+            
+        return jsonify({
+            'message': f'Annotations saved successfully at {annotations_path}',
+            'annotations': coco_annotations
+        }), 200
     return jsonify({'error': 'File name not provided'}), 400

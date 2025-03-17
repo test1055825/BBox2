@@ -130,6 +130,9 @@ document.getElementById('saveAsAnnotations').addEventListener('click', async fun
             }],
         });
 
+        const writable = await handle.createWritable();
+        const save_path = await handle.getFile().then(file => file.path);
+
         fetch('/save_annotations', {
             method: 'POST',
             headers: {
@@ -138,12 +141,15 @@ document.getElementById('saveAsAnnotations').addEventListener('click', async fun
             body: JSON.stringify({ 
                 file_name: fileName, 
                 annotations: annotations,
-                save_path: handle.name
+                save_path: save_path
             })
         })
         .then(response => response.json())
-        .then(data => {
-            alert(data.message || data.error);
+        .then(async data => {
+            // Write the data to the file
+            await writable.write(JSON.stringify(data.annotations, null, 2));
+            await writable.close();
+            alert('Annotations saved successfully!');
         });
     } catch (err) {
         if (err.name !== 'AbortError') {

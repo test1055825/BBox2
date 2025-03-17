@@ -1,7 +1,7 @@
-from flask import Flask
+from flask import Flask, url_for
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static', static_folder='static')
 
 # Read upload directory from environment variable or use default
 UPLOAD_DIR = os.getenv('UPLOAD_DIR', 'static/uploads')
