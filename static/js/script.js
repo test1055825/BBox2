@@ -112,6 +112,46 @@ document.getElementById('saveAnnotations').addEventListener('click', function() 
     });
 });
 
+document.getElementById('saveAsAnnotations').addEventListener('click', async function() {
+    const fileName = document.getElementById('saveAnnotations').dataset.fileName;
+    if (!fileName) {
+        alert('Please upload an image first');
+        return;
+    }
+
+    try {
+        const handle = await window.showSaveFilePicker({
+            suggestedName: `${fileName.split('.')[0]}_annotations_coco.json`,
+            types: [{
+                description: 'JSON Files',
+                accept: {
+                    'application/json': ['.json'],
+                },
+            }],
+        });
+
+        fetch('/save_annotations', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+                file_name: fileName, 
+                annotations: annotations,
+                save_path: handle.name
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message || data.error);
+        });
+    } catch (err) {
+        if (err.name !== 'AbortError') {
+            console.error('Failed to save file:', err);
+        }
+    }
+});
+
 document.getElementById('addLabel').addEventListener('click', function() {
     const newLabel = document.getElementById('newLabel').value;
     if (newLabel) {

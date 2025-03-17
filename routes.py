@@ -27,6 +27,8 @@ def save_annotations_route():
     data = request.json
     file_name = data.get('file_name')
     annotations = data.get('annotations', [])
+    save_path = data.get('save_path')
+    
     if file_name:
         coco_annotations = {
             "images": [
@@ -39,7 +41,7 @@ def save_annotations_route():
                 {
                     "id": idx + 1,
                     "image_id": 1,
-                    "category_id": 1,  # Assuming a single category for simplicity
+                    "category_id": 1,
                     "bbox": [
                         annotation['startX'],
                         annotation['startY'],
@@ -54,11 +56,20 @@ def save_annotations_route():
             "categories": [
                 {
                     "id": 1,
-                    "name": "default"  # Replace with actual category names if needed
+                    "name": "default"
                 }
             ]
         }
-        annotations_path = os.path.join(UPLOAD_DIR, f"{os.path.splitext(file_name)[0]}_annotations_coco.json")
+        
+        # Use custom save path if provided, otherwise use default
+        if save_path:
+            save_dir = os.path.dirname(save_path)
+            if save_dir:
+                os.makedirs(save_dir, exist_ok=True)
+            annotations_path = save_path
+        else:
+            annotations_path = os.path.join(UPLOAD_DIR, f"{os.path.splitext(file_name)[0]}_annotations_coco.json")
+            
         with open(annotations_path, 'w') as f:
             json.dump(coco_annotations, f)
         return jsonify({'message': f'Annotations saved successfully in COCO format at {annotations_path}'}), 200
