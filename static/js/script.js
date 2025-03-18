@@ -361,10 +361,19 @@ function updateLabelsList() {
 function redrawImage() {
     const img = document.getElementById('image');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = 'white'; // Ustaw tło na biały kolor
-    ctx.fillRect(0, 0, canvas.width, canvas.height); // Wypełnij tło białym kolorem
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    ctx.restore();
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Calculate dimensions to maintain aspect ratio
+    const hRatio = canvas.width / img.naturalWidth;
+    const vRatio = canvas.height / img.naturalHeight;
+    const ratio = Math.min(hRatio, vRatio);
+    const centerShiftX = (canvas.width - img.naturalWidth * ratio) / 2;
+    const centerShiftY = (canvas.height - img.naturalHeight * ratio) / 2;
+    
+    ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight,
+                 centerShiftX, centerShiftY, 
+                 img.naturalWidth * ratio, img.naturalHeight * ratio);
 }
 
 function redrawAnnotations() {

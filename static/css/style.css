@@ -46,20 +46,22 @@ body {
     overflow: hidden; /* Ensure the image container does not scroll */
     border: 2px solid black;
     position: relative; /* Ensure canvas is positioned correctly */
-    transition: transform 0.2s ease-in-out; /* Płynna animacja */
     background-color: white; /* Ustaw tło na biały kolor */
 }
 
 #image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Obraz dopasuje się do kontenera, może być przycięty */
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Change from cover to contain */
+    width: auto;        /* Allow natural width */
+    height: auto;       /* Allow natural height */
 }
 
 #canvas {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center the canvas */
 }
 
 #newLabel {
