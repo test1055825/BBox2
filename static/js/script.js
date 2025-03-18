@@ -270,7 +270,8 @@ document.getElementById('labelSelect').addEventListener('change', function() {
 });
 
 document.addEventListener('keydown', function(event) {
-    if (event.key === 'Delete') {
+    const newLabelInput = document.getElementById('newLabel');
+    if (event.key === 'Delete' && document.activeElement !== newLabelInput) {
         deleteSelectedAnnotations();
     }
 });
