@@ -363,6 +363,7 @@ function redrawImage() {
     ctx.fillStyle = 'white'; // Ustaw tło na biały kolor
     ctx.fillRect(0, 0, canvas.width, canvas.height); // Wypełnij tło białym kolorem
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    ctx.restore();
 }
 
 function redrawAnnotations() {
