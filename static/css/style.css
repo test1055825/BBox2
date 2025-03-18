@@ -12,6 +12,7 @@ body {
     height: 100vh; /* Ustaw wysokość na 100% widoku */
     display: flex;
     flex-direction: column; /* Ustawienie kierunku kolumny */
+    width: 100%;
 }
 
 #fileUploadContainer {
@@ -130,4 +131,25 @@ li.selected {
 
 .icon-button:hover {
     color: #007bff;
+}
+
+.main-area {
+    width: 80%;
+    position: relative;
+    padding: 10px;
+}
+
+.sidebar-right {
+    width: 20%;
+    position: fixed;
+    right: 0;
+    top: 0;
+    padding: 10px;
+    border-left: 1px solid #ccc;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
+    background: white;
 }
