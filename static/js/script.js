@@ -306,7 +306,7 @@ function updateAnnotationsList() {
         const li = document.createElement('li');
         li.className = 'list-group-item d-flex justify-content-between align-items-center';
         //li.textContent = `Label: ${annotation.label}, Coordinates: (${annotation.startX}, ${annotation.startY}) - (${annotation.endX}, ${annotation.endY})`;
-        li.textContent = `${annotation.label}, Coordinates: (${annotation.startX}, ${annotation.startY}) - (${annotation.endX}, ${annotation.endY})`;
+        li.textContent = `${annotation.label}, (${annotation.startX}, ${annotation.startY}) - (${annotation.endX}, ${annotation.endY})`;
         li.style.cursor = 'pointer';
         li.addEventListener('click', function() {
             if (selectedAnnotations.has(index)) {

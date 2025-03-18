@@ -137,14 +137,14 @@ li.selected {
 }
 
 .main-area {
-    width: 80%;
+    flex: 0 0 75%;  /* Fixed width for main area */
     padding: 10px;
     display: flex;
     flex-direction: column;
 }
 
 .sidebar-right {
-    width: 20%;
+    flex: 1;        /* Take remaining space */
     padding: 10px;
     border-left: 1px solid #ccc;
     text-align: left;
