@@ -2,6 +2,11 @@ import os
 import json
 
 def create_coco_annotations(file_name, annotations):
+    # Get unique labels and create category mapping
+    unique_labels = {ann['label'] for ann in annotations}
+    categories = [{"id": idx + 1, "name": label} for idx, label in enumerate(sorted(unique_labels))]
+    category_mapping = {cat["name"]: cat["id"] for cat in categories}
+
     return {
         "images": [
             {
@@ -13,7 +18,7 @@ def create_coco_annotations(file_name, annotations):
             {
                 "id": idx + 1,
                 "image_id": 1,
-                "category_id": 1,
+                "category_id": category_mapping[annotation['label']],
                 "bbox": [
                     annotation['startX'],
                     annotation['startY'],
@@ -25,12 +30,7 @@ def create_coco_annotations(file_name, annotations):
             }
             for idx, annotation in enumerate(annotations)
         ],
-        "categories": [
-            {
-                "id": 1,
-                "name": "default"
-            }
-        ]
+        "categories": categories
     }
 
 def save_annotations(file_name, annotations, save_path=None, upload_dir='static/uploads'):
