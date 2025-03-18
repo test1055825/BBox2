@@ -47,6 +47,7 @@ body {
     border: 2px solid black;
     position: relative; /* Ensure canvas is positioned correctly */
     background-color: white; /* Ustaw tło na biały kolor */
+    margin-right: 0; /* Remove any right margin */
 }
 
 #image {
@@ -137,15 +138,13 @@ li.selected {
 
 .main-area {
     width: 80%;
-    position: relative;
     padding: 10px;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar-right {
     width: 20%;
-    position: fixed;
-    right: 0;
-    top: 0;
     padding: 10px;
     border-left: 1px solid #ccc;
     text-align: left;
@@ -154,4 +153,5 @@ li.selected {
     height: 100vh;
     overflow-y: auto;
     background: white;
+    margin-left: -10px; /* Remove gap between main area and sidebar */
 }
