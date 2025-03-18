@@ -32,8 +32,6 @@ const labels = new Set();
 let currentLabel = null;
 let lastChosenLabel = null; // Zmienna do przechowywania ostatnio wybranej etykiety
 let selectedAnnotations = new Set(); // Zbiór zaznaczonych anotacji
-let scale = 1; // Zmienna do przechowywania skali zoomu
-const zoomFactor = 1.1; // Współczynnik zoomu
 let isDragging = false;
 let draggedAnnotationIndex = -1;
 let dragStartX, dragStartY;
@@ -80,8 +78,8 @@ function getResizeHandle(mouseX, mouseY, annotation) {
 }
 
 canvas.addEventListener('mousedown', function(event) {
-    const mouseX = event.offsetX / scale;
-    const mouseY = event.offsetY / scale;
+    const mouseX = event.offsetX;
+    const mouseY = event.offsetY;
 
     if (event.button === 2) {
         isDrawing = false;
@@ -121,8 +119,8 @@ canvas.addEventListener('mousedown', function(event) {
 });
 
 canvas.addEventListener('mousemove', function(event) {
-    const mouseX = event.offsetX / scale;
-    const mouseY = event.offsetY / scale;
+    const mouseX = event.offsetX;
+    const mouseY = event.offsetY;
 
     if (isResizing && draggedAnnotationIndex >= 0) {
         const deltaX = mouseX - dragStartX;
@@ -165,8 +163,8 @@ canvas.addEventListener('mousemove', function(event) {
         redrawAnnotations();
         updateAnnotationsList();
     } else if (isDrawing) {
-        const currentX = event.offsetX / scale;
-        const currentY = event.offsetY / scale;
+        const currentX = event.offsetX;
+        const currentY = event.offsetY;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         redrawImage(); // Redraw image on move
         redrawAnnotations(); // Redraw annotations on move
@@ -186,8 +184,8 @@ canvas.addEventListener('mouseup', function(event) {
         canvas.removeEventListener('mousemove', deleteAnnotation);
     } else if (isDrawing) {
         isDrawing = false;
-        const endX = event.offsetX / scale;
-        const endY = event.offsetY / scale;
+        const endX = event.offsetX;
+        const endY = event.offsetY;
         const labelSelect = document.getElementById('labelSelect');
         const label = labelSelect.value;
         if (label) {
@@ -207,20 +205,6 @@ canvas.addEventListener('mouseup', function(event) {
         }
     }
 });
-
-canvas.addEventListener('wheel', function(event) {
-    event.preventDefault();
-    const mouseX = event.offsetX;
-    const mouseY = event.offsetY;
-    const zoom = event.deltaY < 0 ? zoomFactor : 1 / zoomFactor;
-    scale *= zoom;
-    ctx.translate(mouseX, mouseY);
-    ctx.scale(zoom, zoom);
-    ctx.translate(-mouseX, -mouseY);
-    redrawImage();
-    redrawAnnotations();
-});
-
 
 document.getElementById('saveAsAnnotations').addEventListener('click', async function() {
     const fileName = this.dataset.fileName;  // Updated to use 'this' instead
@@ -285,18 +269,6 @@ document.getElementById('labelSelect').addEventListener('change', function() {
     redrawAnnotations();
 });
 
-document.getElementById('zoomIn').addEventListener('click', function() {
-    scale *= zoomFactor;
-    redrawImage();
-    redrawAnnotations();
-});
-
-document.getElementById('zoomOut').addEventListener('click', function() {
-    scale /= zoomFactor;
-    redrawImage();
-    redrawAnnotations();
-});
-
 document.addEventListener('keydown', function(event) {
     if (event.key === 'Delete') {
         deleteSelectedAnnotations();
@@ -304,8 +276,8 @@ document.addEventListener('keydown', function(event) {
 });
 
 function deleteAnnotation(event) {
-    const mouseX = event.offsetX / scale;
-    const mouseY = event.offsetY / scale;
+    const mouseX = event.offsetX;
+    const mouseY = event.offsetY;
     annotations.forEach((annotation, index) => {
         if (mouseX >= annotation.startX && mouseX <= annotation.endX && mouseY >= annotation.startY && mouseY <= annotation.endY) {
             annotations.splice(index, 1);
@@ -390,15 +362,10 @@ function redrawImage() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'white'; // Ustaw tło na biały kolor
     ctx.fillRect(0, 0, canvas.width, canvas.height); // Wypełnij tło białym kolorem
-    ctx.save();
-    ctx.scale(scale, scale);
-    ctx.drawImage(img, 0, 0, canvas.width / scale, canvas.height / scale);
-    ctx.restore();
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 }
 
 function redrawAnnotations() {
-    ctx.save();
-    ctx.scale(scale, scale);
     annotations.forEach((annotation, index) => {
         if (selectedAnnotations.has(index)) {
             ctx.strokeStyle = 'blue'; // Ustaw kolor na niebieski dla zaznaczonej anotacji
@@ -420,7 +387,6 @@ function redrawAnnotations() {
             );
         }
     });
-    ctx.restore();
 }
 
 // Zapobiegaj domyślnemu menu kontekstowemu na canvasie
